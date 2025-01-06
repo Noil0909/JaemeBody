@@ -66,4 +66,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("androidx.core:core-splashscreen:1.0.1") // splash screen
+
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // firebase
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.4.0") // lifecycle compose
+
 }
