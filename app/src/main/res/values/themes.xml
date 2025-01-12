@@ -4,8 +4,8 @@
     <style name="Theme.JaemeBody" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.JaemeBody.SplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_b</item>
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_c</item>
         <item name="windowSplashScreenAnimationDuration">2000</item>
         <item name="android:windowNoTitle">true</item>
     </style>

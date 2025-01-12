@@ -1,5 +1,6 @@
 package com.example.jaemebody.ui.intro.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -32,7 +34,13 @@ import androidx.compose.ui.unit.sp
 import com.example.jaemebody.R
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(
+    onLogin: (String, String) -> Unit,
+    onSignUp: (String, String) -> Unit,
+    errorMessage: String?
+){
+
+    val context = LocalContext.current
 
     var email by remember{mutableStateOf("")}
     var password by remember{mutableStateOf("")}
@@ -44,7 +52,7 @@ fun LoginScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.logo_a),
+            painter = painterResource(id = R.drawable.logo_c),
             contentDescription = "Logo",
             modifier = Modifier
                 .padding(top = 100.dp, bottom = 32.dp)
@@ -92,6 +100,7 @@ fun LoginScreen(){
                 )
             }
 
+
             BasicTextField(
                 value = password,
                 onValueChange ={password = it},
@@ -100,8 +109,23 @@ fun LoginScreen(){
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
             )
         }
+
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                modifier = Modifier.padding(10.dp),
+                fontSize = 16.sp
+            )
+        }
         Button(
-            onClick = {},
+            onClick = {
+                if(email.isEmpty() || password.isEmpty()){
+                    Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                } else{
+                    onLogin(email, password)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp),
@@ -115,7 +139,13 @@ fun LoginScreen(){
             )
         }
         Button(
-            onClick = {},
+            onClick = {
+                if(email.isEmpty() || password.isEmpty()){
+                    Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                } else{
+                    onSignUp(email, password)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp),
@@ -129,10 +159,4 @@ fun LoginScreen(){
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun LoginScreenPreview(){
-    LoginScreen()
 }

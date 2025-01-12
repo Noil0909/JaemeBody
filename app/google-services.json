@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "335083074422",
+    "project_id": "jaemebody",
+    "storage_bucket": "jaemebody.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335083074422:android:39fa29739bb1c4bf120057",
+        "android_client_info": {
+          "package_name": "com.example.jaemebody"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrfE4RkhJ5ZtaX-szAuYQbAGODUHcnKRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

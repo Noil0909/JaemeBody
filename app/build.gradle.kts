@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -69,10 +70,10 @@ dependencies {
 
     implementation("androidx.core:core-splashscreen:1.0.1") // splash screen
 
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0")) // firebase
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.4.0") // lifecycle compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7") // lifecycle compose
 
 }
