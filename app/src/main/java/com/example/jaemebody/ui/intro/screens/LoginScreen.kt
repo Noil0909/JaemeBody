@@ -28,10 +28,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jaemebody.R
+import com.example.jaemebody.ui.components.CustomButton
+import com.example.jaemebody.ui.components.CustomTextField
 
 @Composable
 fun LoginScreen(
@@ -59,56 +62,17 @@ fun LoginScreen(
                 .size(200.dp)
                 .clip(RoundedCornerShape(100.dp))
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-                .background(Color.LightGray, RoundedCornerShape(8.dp))
-                .padding(16.dp)
-        ){
+        CustomTextField(
+            value = email,
+            onValueChange = {email = it},
+            placeholder = "email"
+        )
 
-            if(email.isEmpty()){
-                Text(
-                    text="Email",
-                    color = Color.Gray,
-                    style = TextStyle(fontSize = 16.sp)
-                )
-            }
-
-            BasicTextField(
-                value = email,
-                onValueChange ={email = it},
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
-                )
-
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-                .background(Color.LightGray, RoundedCornerShape(8.dp))
-                .padding(16.dp)
-        ){
-
-            if(password.isEmpty()){
-                Text(
-                    text="Password",
-                    color = Color.Gray,
-                    style = TextStyle(fontSize = 16.sp)
-                )
-            }
-
-
-            BasicTextField(
-                value = password,
-                onValueChange ={password = it},
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
-            )
-        }
+        CustomTextField(value = password,
+            onValueChange = {password = it},
+            placeholder = "password",
+            isPassword = true
+        )
 
         errorMessage?.let {
             Text(
@@ -118,7 +82,9 @@ fun LoginScreen(
                 fontSize = 16.sp
             )
         }
-        Button(
+
+        CustomButton(
+            text = "Login",
             onClick = {
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -126,37 +92,23 @@ fun LoginScreen(
                     onLogin(email, password)
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue,
-            )
-        ){
-            Text(
-                text = "Login",
-                color = Color.White
-            )
-        }
-        Button(
+            backgroundColor = Color.Blue
+        )
+
+        CustomButton(
+            text = "Sign Up",
             onClick = {
-                if(email.isEmpty() || password.isEmpty()){
-                    Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                } else{
+                if(email.isEmpty() || password.isEmpty())
+                {
+                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                }
+                else
+                {
                     onSignUp(email, password)
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
-            )
-        ){
-            Text(
-                text = "Sign Up",
-                color = Color.White
-            )
-        }
+            backgroundColor = Color.DarkGray
+        )
+
     }
 }

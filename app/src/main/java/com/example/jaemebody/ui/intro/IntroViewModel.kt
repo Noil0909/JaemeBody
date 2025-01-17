@@ -2,6 +2,8 @@ package com.example.jaemebody.ui.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jaemebody.repository.FirebaseRepository
+import com.example.jaemebody.util.ErrorMessageUtil.getErrorMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +23,17 @@ class IntroViewModel : ViewModel() {
     // 회원가입
     fun signUp(email: String, password: String){
         viewModelScope.launch{
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener{ task ->
-                    if(task.isSuccessful){
-                        _authState.value = auth.currentUser
-                    } else{
-                        _errorState.value = task.exception?.message
-                    }
-                }
+
+            val user = FirebaseRepository.signUp(email, password)
+            _authState.value = user
+//            auth.createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener{ task ->
+//                    if(task.isSuccessful){
+//                        _authState.value = auth.currentUser
+//                    } else{
+//                        _errorState.value = getErrorMessage(task.exception)
+//                    }
+//                }
         }
     }
 
@@ -36,14 +41,17 @@ class IntroViewModel : ViewModel() {
 
     fun signIn(email: String, password: String){
         viewModelScope.launch{
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener{ task ->
-                    if(task.isSuccessful){
-                        _authState.value = auth.currentUser
-                    } else{
-                        _errorState.value = task.exception?.message
-                    }
-                }
+
+            val user = FirebaseRepository.signIn(email, password)
+            _authState.value = user
+//            auth.signInWithEmailAndPassword(email, password)
+//                .addOnCompleteListener{ task ->
+//                    if(task.isSuccessful){
+//                        _authState.value = auth.currentUser
+//                    } else{
+//                        _errorState.value = getErrorMessage(task.exception)
+//                    }
+//                }
         }
     }
 }
