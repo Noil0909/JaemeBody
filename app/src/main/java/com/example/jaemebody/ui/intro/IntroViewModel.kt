@@ -24,16 +24,16 @@ class IntroViewModel : ViewModel() {
     fun signUp(email: String, password: String){
         viewModelScope.launch{
 
-            val user = FirebaseRepository.signUp(email, password)
-            _authState.value = user
-//            auth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener{ task ->
-//                    if(task.isSuccessful){
-//                        _authState.value = auth.currentUser
-//                    } else{
-//                        _errorState.value = getErrorMessage(task.exception)
-//                    }
-//                }
+            try{
+                val user = FirebaseRepository.signUp(email, password)
+                _authState.value = user
+                _errorState.value = null
+            }
+            // 나중에 분기별 예외 처리 ex) timeout ..
+            catch (e: Exception){
+                _errorState.value = e.message
+            }
+
         }
     }
 
@@ -42,16 +42,14 @@ class IntroViewModel : ViewModel() {
     fun signIn(email: String, password: String){
         viewModelScope.launch{
 
-            val user = FirebaseRepository.signIn(email, password)
-            _authState.value = user
-//            auth.signInWithEmailAndPassword(email, password)
-//                .addOnCompleteListener{ task ->
-//                    if(task.isSuccessful){
-//                        _authState.value = auth.currentUser
-//                    } else{
-//                        _errorState.value = getErrorMessage(task.exception)
-//                    }
-//                }
+            try{
+                val user = FirebaseRepository.signIn(email, password)
+                _authState.value = user
+                _errorState.value = null
+            }
+            catch (e: Exception){
+                _errorState.value = e.message
+            }
         }
     }
 }
