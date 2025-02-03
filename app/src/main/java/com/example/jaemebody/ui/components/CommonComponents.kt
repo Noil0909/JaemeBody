@@ -2,6 +2,7 @@ package com.example.jaemebody.ui.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,15 +12,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomTextField(
+fun CustomTextField(                       // 함수 이름은 custom 대신 좀 더 알아보기 쉬운 이름 사용하기
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
@@ -84,4 +88,36 @@ fun CustomButton(
             color = Color.White
         )
     }
+}
+
+// 공통 컴포넌트를 만들 때 처음부터 공통으로 사용하는 경우도 있지만
+// 만들고 보니 여기저기서 사용할 것 같은 느낌일 때 공통화한다.
+
+@Composable
+fun CustomGradientButton(
+    text: String,
+    onClick: () -> Unit,
+    gradientColors: List<Color>,
+    modifier: Modifier = Modifier
+){
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                brush = Brush.horizontalGradient(colors = gradientColors),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable( onClick = onClick)
+            .padding(vertical = 12.dp, horizontal = 24.dp),
+        contentAlignment = Alignment.Center
+    ){
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
 }
