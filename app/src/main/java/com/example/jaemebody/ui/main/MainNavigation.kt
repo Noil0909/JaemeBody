@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jaemebody.R
+import com.example.jaemebody.ui.common.JaemeBodyScreen
 
 @Composable
 fun MainNavigation(
@@ -38,7 +39,7 @@ fun MainNavigation(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ){
-        JaemeBodyScreen.entries.forEach {screen ->
+        JaemeBodyScreen.entries.forEach { screen ->
 
             val isSelected = currentScreen == screen
 
@@ -72,16 +73,4 @@ fun MainNavigation(
             }
         }
     }
-}
-
-enum class JaemeBodyScreen(val icon: Int){
-    Home(R.drawable.tab1_icon),  // 홈 화면
-    Diet(R.drawable.tab2_icon),  // 다이어트 화면
-    Profile(R.drawable.tab3_icon) // 프로필 화면
-}
-
-@Preview
-@Composable
-fun MainNavigation(){
-    MainNavigation(JaemeBodyScreen.Home){}
 }
