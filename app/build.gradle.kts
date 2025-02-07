@@ -76,4 +76,6 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7") // lifecycle compose
 
+    implementation("com.google.firebase:firebase-firestore") // firestore
+
 }
