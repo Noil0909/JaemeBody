@@ -15,3 +15,9 @@ enum class ProfileScreens{
     ProfileInfo,
     ProfileEdit
 }
+
+// 운동 기록 스크린
+enum class DietRecordScreens{
+    DietRecordInfo,
+    DietRecordAdd
+}
