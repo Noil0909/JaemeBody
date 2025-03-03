@@ -12,18 +12,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.example.jaemebody.MainViewModel
 import com.example.jaemebody.ui.common.DietRecordScreens
 import com.example.jaemebody.ui.dietRecord.DietRecordInputScreen
 import com.example.jaemebody.ui.dietRecord.DietRecordListScreen
 
 @Composable
-fun DietScreen(){
+fun DietScreen(
+    mainViewModel: MainViewModel
+){
 
     var currentScreen by rememberSaveable { mutableStateOf(DietRecordScreens.DietRecordInfo) }
 
     when(currentScreen){
         DietRecordScreens.DietRecordInfo -> {
             DietRecordListScreen(
+                mainViewModel = mainViewModel,
                 onAddClicked = {
                     currentScreen = DietRecordScreens.DietRecordAdd
                 }
@@ -31,6 +35,7 @@ fun DietScreen(){
         }
         DietRecordScreens.DietRecordAdd -> {
             DietRecordInputScreen(
+                mainViewModel = mainViewModel,
                 onSaveClicked = {
                     currentScreen = DietRecordScreens.DietRecordInfo
                 },

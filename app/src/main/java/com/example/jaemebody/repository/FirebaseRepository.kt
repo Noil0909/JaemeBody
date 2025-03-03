@@ -1,5 +1,6 @@
 package com.example.jaemebody.repository
 
+import com.example.jaemebody.model.Exercise
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -67,5 +68,45 @@ object FirebaseRepository {
                     onComplete("", "", "")
                 }
         } ?: onComplete("", "", "")
+    }
+
+    // 운동 기록 만들기
+    suspend fun createExercise(exercise: Exercise){
+
+        currentUser?.let{ user ->
+            db.collection("diet_records")
+                .document(user.uid)
+                .collection("exercises")
+                .add(exercise)
+                .await()
+        }
+    }
+
+    // 운동 기록 불러오기
+    suspend fun readExercise(): List<Exercise> {
+
+        return currentUser?.let { user->
+            val documents = db.collection("diet_records")
+                .document(user.uid)
+                .collection("exercises")
+                .get()
+                .await()
+            documents.documents.mapNotNull{ document->
+                document.toObject(Exercise::class.java)?.copy(docId = document.id)
+            }
+        } ?: emptyList()
+    }
+
+    // 운동 기록 삭제하기
+    suspend fun removeExercise(documentId: String){
+        currentUser?.let { user->
+            db.collection("diet_records")
+                .document(user.uid)
+                .collection("exercises")
+                .document(documentId)
+                .delete()
+                .await()
+
+        }
     }
 }

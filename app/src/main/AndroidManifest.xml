@@ -30,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name=".ui.dietRecord.dietRecordInfo.DietRecordInfoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.JaemeBody"
+            />
     </application>
 
 </manifest>

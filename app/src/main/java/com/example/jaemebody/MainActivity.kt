@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()){
                         when(currentScreen){
                             JaemeBodyScreen.Home -> HomeScreen()
-                            JaemeBodyScreen.Diet -> DietScreen()
+                            JaemeBodyScreen.Diet -> DietScreen(mainViewModel = mainViewModel)
                             JaemeBodyScreen.Profile -> ProfileScreen(mainViewModel = mainViewModel)
                         }
                     }
@@ -59,5 +59,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+    }
+    // 무조건  mainViewModel.loadExercises()가 onRestart되므로
+    // Profile탭 등에서 액티비티 이동이 있을 수 있으므로
+    // 현재 탭이 어딘지에 따라, 즉 Diet 탭에서만 onRestart 되도록 수정하면 더 좋을듯
+    override fun onRestart(){
+        super.onRestart()
+        mainViewModel.loadExercises()
     }
 }

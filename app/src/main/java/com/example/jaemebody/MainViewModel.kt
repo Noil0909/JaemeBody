@@ -1,9 +1,12 @@
 package com.example.jaemebody
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
 
@@ -19,6 +22,9 @@ class MainViewModel: ViewModel() {
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage : StateFlow<String?> = _errorMessage
+
+    private val _exerciseRecords = MutableStateFlow<List<Exercise>>(emptyList())
+    val exerciseRecords: StateFlow<List<Exercise>> = _exerciseRecords
 
     init {
         loadProfile()
@@ -53,5 +59,19 @@ class MainViewModel: ViewModel() {
 
     fun clearErrorMessage(){
         _errorMessage.value = null
+    }
+
+    fun saveExerciseRecord(exercise: Exercise){
+        viewModelScope.launch{
+             FirebaseRepository.createExercise(exercise)
+        }
+    }
+
+    fun loadExercises(){
+        viewModelScope.launch{
+            val exercises = FirebaseRepository.readExercise()
+            _exerciseRecords.value = exercises
+        }
+
     }
 }
