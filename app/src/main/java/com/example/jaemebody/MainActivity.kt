@@ -29,6 +29,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainViewModel.loadExercises()
+
         setContent {
             JaemeBodyTheme {
 
@@ -42,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         .padding(bottom = 60.dp)
                         .fillMaxSize()){
                         when(currentScreen){
-                            JaemeBodyScreen.Home -> HomeScreen()
+                            JaemeBodyScreen.Home -> HomeScreen(mainViewModel = mainViewModel)
                             JaemeBodyScreen.Diet -> DietScreen(mainViewModel = mainViewModel)
                             JaemeBodyScreen.Profile -> ProfileScreen(mainViewModel = mainViewModel)
                         }
