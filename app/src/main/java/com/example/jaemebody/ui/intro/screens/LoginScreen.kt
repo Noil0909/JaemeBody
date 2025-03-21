@@ -5,10 +5,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jaemebody.R
 import com.example.jaemebody.ui.components.CustomButton
+import com.example.jaemebody.ui.components.CustomSocialButton
 import com.example.jaemebody.ui.components.CustomTextField
 
 @Composable
@@ -55,7 +59,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.logo_c),
+            painter = painterResource(id = R.drawable.logo_b),
             contentDescription = "Logo",
             modifier = Modifier
                 .padding(top = 100.dp, bottom = 32.dp)
@@ -84,7 +88,7 @@ fun LoginScreen(
         }
 
         CustomButton(
-            text = "Login",
+            text = "로그인",
             onClick = {
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -95,8 +99,23 @@ fun LoginScreen(
             backgroundColor = Color.Blue
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CustomSocialButton(
+            imageId= R.drawable.kakao_login_medium_wide,
+            contentDescription = "카카오 로그인",
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .padding(horizontal = 16.dp)
+
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         CustomButton(
-            text = "Sign Up",
+            text = "회원가입",
             onClick = {
                 if(email.isEmpty() || password.isEmpty())
                 {

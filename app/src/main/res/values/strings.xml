@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JaemeBody</string>
+    <string name="kakao_native_app_key">66d89193ef726cfb74ed65c33a6ec219</string>
 </resources>

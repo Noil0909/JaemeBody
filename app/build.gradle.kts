@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.jaemebody"
-        minSdk = 34
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -78,4 +78,5 @@ dependencies {
 
     implementation("com.google.firebase:firebase-firestore") // firestore
 
+    implementation("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
 }
