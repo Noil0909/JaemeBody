@@ -1,7 +1,13 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+}
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -19,7 +25,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-    }
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties.getProperty("KAKAO_NATIVE_APP_KEY")}\"")
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties.getProperty("KAKAO_NATIVE_APP_KEY")
+          }
 
     buildTypes {
         release {
