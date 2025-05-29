@@ -15,15 +15,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +42,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,13 +59,15 @@ fun DietRecordListScreen(
 ) {
 
     val exerciseList by mainViewModel.exerciseRecords.collectAsState()
+    val targetCalories by mainViewModel.targetCalorie.collectAsState()
 
     LaunchedEffect(Unit){
         mainViewModel.loadExercises()
     }
 
-    val targetCalories = 1500
     val consumedCalories = exerciseList.sumOf { it.calorie }
+    var showDialog by remember { mutableStateOf(false) }
+    var newTarget by remember { mutableStateOf(targetCalories.toString()) }
 
     Box(modifier = Modifier
         .background(Color.Black)
@@ -78,11 +89,29 @@ fun DietRecordListScreen(
 
             Spacer(modifier = Modifier.padding(20.dp))
 
-            Text(
-                text = "$consumedCalories / $targetCalories kcal",
-                color = Color.White,
-                fontSize = 20.sp,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "$consumedCalories / $targetCalories kcal",
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = "목표 변경",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .clickable { showDialog = true }
+                        .background(Color.DarkGray, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
+
 
             Spacer(modifier = Modifier.padding(20.dp))
 
@@ -126,6 +155,42 @@ fun DietRecordListScreen(
                 color = Color.Black
             )
         }
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("목표 칼로리 변경", color = Color.White) },
+            text = {
+                TextField(
+                    value = newTarget,
+                    onValueChange = { newTarget = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedContainerColor = Color.DarkGray,
+                        unfocusedContainerColor = Color.DarkGray,
+                        cursorColor = Color.White
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (newTarget.all { it.isDigit() }) {
+                        mainViewModel.setTargetCalorie(newTarget.toInt())
+                        showDialog = false
+                    }
+                }) {
+                    Text("확인", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("취소", color = Color.White)
+                }
+            },
+            containerColor = Color.Black
+        )
     }
 }
 
@@ -185,7 +250,7 @@ fun AnimatedCircularProgressBar(
 
     val animatedProgress = remember { Animatable(0f) }
 
-    LaunchedEffect(consumedCalories) {
+    LaunchedEffect(consumedCalories, targetCalories) {
         animatedProgress.animateTo(
             targetValue = consumedCalories.toFloat() / targetCalories,
             animationSpec = tween(durationMillis = 1000)

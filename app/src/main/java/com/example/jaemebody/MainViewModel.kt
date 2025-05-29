@@ -7,6 +7,7 @@ import com.example.jaemebody.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MainViewModel: ViewModel() {
 
@@ -25,6 +26,9 @@ class MainViewModel: ViewModel() {
 
     private val _exerciseRecords = MutableStateFlow<List<Exercise>>(emptyList())
     val exerciseRecords: StateFlow<List<Exercise>> = _exerciseRecords
+
+    private val _targetCalorie = MutableStateFlow(1500)
+    val targetCalorie: StateFlow<Int> = _targetCalorie
 
     init {
         loadProfile()
@@ -74,7 +78,25 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    fun loadTodayExercises() {
+        viewModelScope.launch {
+            val all = FirebaseRepository.readExercise()
+            val today = LocalDate.now().toString()
+            _exerciseRecords.value = all.filter { it.date == today }
+        }
+    }
+
+    fun loadAllExercises() {
+        viewModelScope.launch {
+            _exerciseRecords.value = FirebaseRepository.readExercise()
+        }
+    }
+
     fun logout() {
         FirebaseRepository.logout()
+    }
+
+    fun setTargetCalorie(value: Int) {
+        _targetCalorie.value = value
     }
 }

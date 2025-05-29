@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.jaemebody.ui.common.JaemeBodyScreen
 import com.example.jaemebody.ui.main.MainNavigation
+import com.example.jaemebody.ui.main.screens.CalendarScreen
 import com.example.jaemebody.ui.main.screens.DietScreen
 import com.example.jaemebody.ui.main.screens.HomeScreen
 import com.example.jaemebody.ui.main.screens.ProfileScreen
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
                         when(currentScreen){
                             JaemeBodyScreen.Home -> HomeScreen(mainViewModel = mainViewModel)
                             JaemeBodyScreen.Diet -> DietScreen(mainViewModel = mainViewModel)
+                            JaemeBodyScreen.Calendar -> CalendarScreen(mainViewModel = mainViewModel)
                             JaemeBodyScreen.Profile -> ProfileScreen(mainViewModel = mainViewModel)
                         }
                     }

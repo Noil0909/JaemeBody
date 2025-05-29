@@ -91,7 +91,7 @@ fun DietRecordInputScreen(
             CustomTextField(
                 value = duration,
                 onValueChange = {duration = it},
-                placeholder = "시간"
+                placeholder = "시간(분)"
             )
         }
     }

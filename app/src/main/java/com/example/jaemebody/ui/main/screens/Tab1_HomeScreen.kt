@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -30,11 +31,13 @@ import com.example.jaemebody.MainViewModel
 import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.ui.components.AnimatedText
 import com.example.jaemebody.ui.components.ShiningText
+import java.time.LocalDate
 
 @Composable
-fun HomeScreen(mainViewModel: MainViewModel){
-
-    val exerciseList by mainViewModel.exerciseRecords.collectAsState()
+fun HomeScreen(mainViewModel: MainViewModel) {
+    val allExercises by mainViewModel.exerciseRecords.collectAsState()
+    val today = LocalDate.now().toString()
+    val todayExercises = allExercises.filter { it.date == today }
 
     Box(
         modifier = Modifier
@@ -42,24 +45,16 @@ fun HomeScreen(mainViewModel: MainViewModel){
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-
-        if(exerciseList.isNotEmpty())
-        {
-            AnimatedExerciseGraph(exerciseList)
-        }
-
-        else{
+        if (todayExercises.isNotEmpty()) {
+            AnimatedExerciseGraph(todayExercises)
+        } else {
             Text(
-                text="운동 기록을 추가하세요.",
-                fontSize=30.sp,
-                color=Color.White
-                )
+                text = "오늘의 운동 기록이 없습니다.",
+                color = Color.White,
+                fontSize = 16.sp
+            )
         }
-
     }
-
-
-
 }
 
 @Composable
@@ -74,8 +69,15 @@ fun AnimatedExerciseGraph(exercises: List<Exercise>) {
     ) {
 
         Spacer(modifier = Modifier.padding(15.dp))
+//
+//        ShiningText()
+        Text(
+            text = "오늘의 운동 기록",
+            fontSize = 48.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
 
-        ShiningText()
+        )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
