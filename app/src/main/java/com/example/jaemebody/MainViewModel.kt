@@ -72,6 +72,9 @@ class MainViewModel: ViewModel() {
             val exercises = FirebaseRepository.readExercise()
             _exerciseRecords.value = exercises
         }
+    }
 
+    fun logout() {
+        FirebaseRepository.logout()
     }
 }

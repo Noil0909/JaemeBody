@@ -52,4 +52,32 @@ class IntroViewModel : ViewModel() {
             }
         }
     }
+
+    fun registerWithProfile(
+        email: String,
+        password: String,
+        name: String,
+        age: String,
+        height: String,
+        onFail: () -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val user = FirebaseRepository.signUp(email, password)
+                if (user != null) {
+                    FirebaseRepository.saveProfileData(name, age, height) { success ->
+                        if (!success) onFail()
+                    }
+                    _authState.value = user
+                    _errorState.value = null
+                } else {
+                    onFail()
+                }
+            } catch (e: Exception) {
+                _errorState.value = e.message
+                onFail()
+            }
+        }
+    }
+
 }

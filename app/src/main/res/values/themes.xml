@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.JaemeBody" parent="Theme.SplashScreen" />
+    <style name="Theme.JaemeBody" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.JaemeBody.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/black</item>

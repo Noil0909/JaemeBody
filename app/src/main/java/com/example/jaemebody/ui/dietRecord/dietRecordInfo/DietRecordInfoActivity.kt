@@ -110,7 +110,7 @@ fun DietRecordInfoScreen(
         Spacer(modifier = Modifier.padding(20.dp))
 
         CustomGradientButton(
-            text = "나가기",
+            text = "뒤로가기",
             onClick = { activity.finish() },
             gradientColors = listOf(Color.Gray, Color.DarkGray)
         )

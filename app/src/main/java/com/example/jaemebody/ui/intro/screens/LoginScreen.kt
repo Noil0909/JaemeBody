@@ -43,7 +43,7 @@ import com.example.jaemebody.ui.components.CustomTextField
 @Composable
 fun LoginScreen(
     onLogin: (String, String) -> Unit,
-    onSignUp: (String, String) -> Unit,
+    onSignUp: () -> Unit,
     errorMessage: String?
 ){
 
@@ -59,7 +59,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.logo_b),
+            painter = painterResource(id = R.drawable.logo_a),
             contentDescription = "Logo",
             modifier = Modifier
                 .padding(top = 100.dp, bottom = 32.dp)
@@ -117,14 +117,9 @@ fun LoginScreen(
         CustomButton(
             text = "회원가입",
             onClick = {
-                if(email.isEmpty() || password.isEmpty())
-                {
-                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
-                }
-                else
-                {
-                    onSignUp(email, password)
-                }
+                // 이전: onSignUp(email, password)
+                // 변경: 회원가입 화면으로 전환 요청
+                onSignUp() // 🔄 파라미터 없는 함수로 변경
             },
             backgroundColor = Color.DarkGray
         )

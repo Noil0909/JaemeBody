@@ -34,6 +34,7 @@ fun ProfileScreen(mainViewModel: MainViewModel) {
     when (currentScreen){
         ProfileScreens.ProfileInfo -> {
             ProfileInfoScreen(
+                mainViewModel,
                 name = name,
                 age = age,
                 height = height,

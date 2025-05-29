@@ -69,15 +69,6 @@ fun ProfileEditScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CustomGradientButton(text = "취소",
-                onClick = {
-                    onCancelClicked()
-                },
-                gradientColors = listOf(Color.Gray, Color.DarkGray)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             CustomGradientButton(text = "저장",
                 onClick = {
                     if(name.isNotBlank() && age.all{it.isDigit()} && height.all {it.isDigit()}){
@@ -93,6 +84,15 @@ fun ProfileEditScreen(
                     }
                 },
                 gradientColors = listOf(Color(0xFF6A1B9A), Color(0xFFAB47BC))
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            CustomGradientButton(text = "취소",
+                onClick = {
+                    onCancelClicked()
+                },
+                gradientColors = listOf(Color.Gray, Color.DarkGray)
             )
         }
     }

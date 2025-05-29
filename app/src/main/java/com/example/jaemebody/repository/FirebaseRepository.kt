@@ -1,9 +1,11 @@
 package com.example.jaemebody.repository
 
+import android.util.Log
 import com.example.jaemebody.model.Exercise
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.tasks.await
 
 object FirebaseRepository {
@@ -29,6 +31,19 @@ object FirebaseRepository {
     suspend fun signIn(email: String, password: String): FirebaseUser? {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         return result.user
+    }
+
+    fun logout() {
+        FirebaseAuth.getInstance().signOut()
+
+        // (선택) 카카오 로그아웃도 함께 처리
+//        UserApiClient.instance.logout { error ->
+//            if (error != null) {
+//                Log.e("LOGOUT", "Kakao logout failed", error)
+//            } else {
+//                Log.d("LOGOUT", "Kakao logout succeeded")
+//            }
+//        }
     }
 
     // 유저 정보 저장

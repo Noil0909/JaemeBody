@@ -48,6 +48,14 @@ fun HomeScreen(mainViewModel: MainViewModel){
             AnimatedExerciseGraph(exerciseList)
         }
 
+        else{
+            Text(
+                text="운동 기록을 추가하세요.",
+                fontSize=30.sp,
+                color=Color.White
+                )
+        }
+
     }
 
 
