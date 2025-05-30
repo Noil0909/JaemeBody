@@ -7,9 +7,10 @@ import kotlinx.coroutines.launch
 
 class DietRecordInfoViewModel : ViewModel(){
 
-    fun removeExerciseRecord(docId: String){
+    fun removeExerciseRecord(docId: String, onComplete: () -> Unit){
         viewModelScope.launch {
             FirebaseRepository.removeExercise(docId)
+            onComplete()
         }
     }
 }

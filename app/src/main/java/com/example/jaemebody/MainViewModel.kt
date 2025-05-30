@@ -71,6 +71,7 @@ class MainViewModel: ViewModel() {
     fun saveExerciseRecord(exercise: Exercise){
         viewModelScope.launch{
              FirebaseRepository.createExercise(exercise)
+            loadTodayExercises()
         }
     }
 

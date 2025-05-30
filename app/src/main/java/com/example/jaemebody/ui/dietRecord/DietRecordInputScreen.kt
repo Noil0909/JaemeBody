@@ -65,7 +65,7 @@ fun DietRecordInputScreen(
             Spacer(modifier = Modifier.padding(20.dp))
 
             AnimatedText(
-                text = "Diet Record Input",
+                text = "운동 정보 입력",
                 color = Color.White,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium

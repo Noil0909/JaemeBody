@@ -61,7 +61,9 @@ fun DietRecordListScreen(
 ) {
     val allExercises by mainViewModel.exerciseRecords.collectAsState()
     val today = LocalDate.now().toString()
-    val todayExercises = allExercises.filter { it.date == today }
+    val todayExercises = remember(allExercises) {
+        allExercises.filter { it.date == today }
+    }
     val totalCalories = todayExercises.sumOf { it.calorie }
     val totalDuration = todayExercises.sumOf { it.duration }
 
@@ -145,7 +147,7 @@ fun DietRecordListScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             LazyColumn {
-                items(exerciseList){ exercise ->
+                items(todayExercises){ exercise ->
                     ExerciseRow(exercise = exercise)
                 }
             }

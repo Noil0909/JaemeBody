@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jaemebody.MainViewModel
 import com.example.jaemebody.ui.components.AnimatedText
 import com.example.jaemebody.ui.components.CustomGradientButton
 import com.example.jaemebody.ui.theme.JaemeBodyTheme
@@ -24,6 +25,7 @@ import com.example.jaemebody.ui.theme.JaemeBodyTheme
 class DietRecordInfoActivity : ComponentActivity(){
 
     private val dietRecordInfoViewModel by viewModels<DietRecordInfoViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class DietRecordInfoActivity : ComponentActivity(){
             JaemeBodyTheme {
                 DietRecordInfoScreen(
                     dietRecordInfoViewModel = dietRecordInfoViewModel,
+                    mainViewModel = mainViewModel,
                     docId = docId ?: "",
                     name = name ?: "",
                     duration = duration ?: "",
@@ -56,7 +59,8 @@ fun DietRecordInfoScreen(
     name: String,
     duration: String,
     calorie: String,
-    dietRecordInfoViewModel: DietRecordInfoViewModel
+    dietRecordInfoViewModel: DietRecordInfoViewModel,
+    mainViewModel: MainViewModel
 ){
 
     val context = LocalContext.current
@@ -69,8 +73,8 @@ fun DietRecordInfoScreen(
             .padding(20.dp)
     ){
         AnimatedText(
-            text = "Info",
-            color = Color.Blue,
+            text = "운동 정보",
+            color = Color.White,
             fontSize = 30.sp,
             fontWeight = FontWeight.Medium
         )
@@ -103,9 +107,11 @@ fun DietRecordInfoScreen(
         CustomGradientButton(
             text = "삭제하기",
             onClick = {
-                dietRecordInfoViewModel.removeExerciseRecord(docId)
-                activity.finish()
-                      },
+                dietRecordInfoViewModel.removeExerciseRecord(docId) {
+                    mainViewModel.loadTodayExercises()
+                    activity.finish()
+                }
+            },
             gradientColors = listOf(Color(0xFF6A1B9A), Color(0xFFAB47BC))
         )
 

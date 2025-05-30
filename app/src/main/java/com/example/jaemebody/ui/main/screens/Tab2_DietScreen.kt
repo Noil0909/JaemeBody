@@ -36,7 +36,7 @@ fun DietScreen(mainViewModel: MainViewModel) {
         DietRecordScreens.DietRecordInfo -> {
             DietRecordListScreen(
                 mainViewModel = mainViewModel,
-//                todayDietRecords = todayDietRecords, // ⬅️ 전달할 수 있도록 수정
+//                todayDietRecords = todayDietRecords, //  전달할 수 있도록 수정
                 onAddClicked = {
                     currentScreen = DietRecordScreens.DietRecordAdd
                 }
