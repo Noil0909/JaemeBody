@@ -38,7 +38,7 @@ object FirebaseRepository {
     fun logout() {
         FirebaseAuth.getInstance().signOut()
 
-        // (선택) 카카오 로그아웃도 함께 처리
+        // 카카오 로그아웃도 함께 처리
 //        UserApiClient.instance.logout { error ->
 //            if (error != null) {
 //                Log.e("LOGOUT", "Kakao logout failed", error)

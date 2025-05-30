@@ -69,12 +69,12 @@ fun LoginScreen(
         CustomTextField(
             value = email,
             onValueChange = {email = it},
-            placeholder = "email"
+            placeholder = "이메일"
         )
 
         CustomTextField(value = password,
             onValueChange = {password = it},
-            placeholder = "password",
+            placeholder = "비밀번호",
             isPassword = true
         )
 
@@ -86,6 +86,7 @@ fun LoginScreen(
                 fontSize = 16.sp
             )
         }
+        Spacer(modifier = Modifier.height(12.dp))
 
         CustomButton(
             text = "로그인",
@@ -101,16 +102,31 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        CustomSocialButton(
-            imageId= R.drawable.kakao_login_medium_wide,
-            contentDescription = "카카오 로그인",
-            onClick = { /*TODO*/ },
+
+        Button(
+            onClick = { // 카카오 로그인 구현 ㄱㄱ
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
-                .padding(horizontal = 16.dp)
+                .padding(start = 8.dp, end = 8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFEE500)
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ){
+            Image(
+                painter = painterResource(R.drawable.kakao_symbol),
+                contentDescription = "kakao symbol",
+                modifier = Modifier
+                    .size(18.dp)
+                    .padding(end = 3.dp)
+            )
+            Text(
+                text = "카카오 로그인",
+                color = Color(0xD9000000)
+            )
+        }
 
-        )
 
         Spacer(modifier = Modifier.height(8.dp))
 

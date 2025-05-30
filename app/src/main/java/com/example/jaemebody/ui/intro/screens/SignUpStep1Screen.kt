@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jaemebody.R
+import com.example.jaemebody.ui.components.CustomButton
 import com.example.jaemebody.ui.components.CustomGradientButton
 import com.example.jaemebody.ui.components.CustomTextField
 
@@ -64,7 +65,7 @@ fun SignUpStep1Screen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        CustomGradientButton(
+        CustomButton(
             text = "다음",
             onClick = {
                 if (email.isNotEmpty() && password.isNotEmpty()) {
@@ -73,7 +74,7 @@ fun SignUpStep1Screen(
                     Toast.makeText(context, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
                 }
             },
-            gradientColors = listOf(Color(0xFF6A1B9A), Color(0xFFAB47BC))
+            backgroundColor = Color.Blue
         )
 
         Spacer(modifier = Modifier.height(12.dp))

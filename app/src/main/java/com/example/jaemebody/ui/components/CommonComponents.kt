@@ -90,7 +90,8 @@ fun CustomButton(
             .padding(start = 8.dp, end = 8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
-        )
+        ),
+        shape = RoundedCornerShape(12.dp)
     ){
         Text(
             text = text,
@@ -108,7 +109,7 @@ fun CustomSocialButton(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp)) // 모서리 둥글기
+            .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
     ) {
         Image(
@@ -117,7 +118,7 @@ fun CustomSocialButton(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 8.dp, end = 8.dp),
-            contentScale = ContentScale.Crop // 이미지 채우기 방식
+            contentScale = ContentScale.Crop
         )
     }
 }
