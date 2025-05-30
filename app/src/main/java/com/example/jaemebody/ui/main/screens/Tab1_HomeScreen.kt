@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -34,141 +43,192 @@ import com.example.jaemebody.ui.components.ShiningText
 import java.time.LocalDate
 
 @Composable
+@ExperimentalLayoutApi
 fun HomeScreen(mainViewModel: MainViewModel) {
-    val allExercises by mainViewModel.exerciseRecords.collectAsState()
+    val exercises by mainViewModel.exerciseRecords.collectAsState()
     val today = LocalDate.now().toString()
-    val todayExercises = allExercises.filter { it.date == today }
+    val todayExercises = exercises.filter { it.date == today }
+
+    val totalCalories = todayExercises.sumOf { it.calorie }
+    val totalDuration = todayExercises.sumOf { it.duration }
+    val targetCalories by mainViewModel.targetCalorie.collectAsState()
+
+    val progress = totalCalories.toFloat() / targetCalories
 
     LaunchedEffect(Unit) {
         mainViewModel.loadTodayExercises()
     }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                Text("🏋️‍♂️ 오늘 총 ${totalDuration}분 운동", fontSize = 20.sp, color = Color.White)
+                Text("🔥 $totalCalories kcal 소모", fontSize = 20.sp, color = Color.White)
+                Text("💪 목표의 ${(progress * 100).toInt()}% 달성", fontSize = 18.sp, color = Color.Green)
+            }
+        }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text("오늘 한 운동", color = Color.White, fontSize = 20.sp)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BadgeListSection(todayExercises)
+        if (todayExercises.isNotEmpty()) {
+            AnimatedExerciseGraph(todayExercises)
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun BadgeListSection(exercises: List<Exercise>) {
+    // 중복된 운동 제거 (이름 기준)
+    val uniqueNames = exercises.map { it.name }.distinct()
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        contentAlignment = Alignment.Center
+            .height(90.dp) // ✅ 최대 두 줄 정도 높이 제한
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()) // ✅ 내부 스크롤 가능하도록
     ) {
-        if (todayExercises.isNotEmpty()) {
-            AnimatedExerciseGraph(todayExercises)
-        } else {
-            Text(
-                text = "오늘의 운동 기록이 없습니다.",
-                color = Color.White,
-                fontSize = 16.sp
-            )
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            uniqueNames.forEach { name ->
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .background(Color(0xFF3700B3), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "• $name",
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 fun AnimatedExerciseGraph(exercises: List<Exercise>) {
+    val maxDuration = exercises.maxOfOrNull { it.duration } ?: 1
+    val maxCalorie = exercises.maxOfOrNull { it.calorie } ?: 1
 
-    val maxDuration = exercises.maxOf { it.duration }
-    val maxCalorie = exercises.maxOf { it.calorie }
+    val barMaxHeight = 140.dp
 
-    Column(modifier = Modifier
-        .fillMaxWidth(),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Spacer(modifier = Modifier.padding(15.dp))
-//
-//        ShiningText()
-        Text(
-            text = "오늘의 운동 기록",
-            fontSize = 48.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-
-        )
-
-        Spacer(modifier = Modifier.padding(15.dp))
-
         Row(
             modifier = Modifier
-                .height(500.dp)
+                .height(315.dp) // 그래프 높이 고정
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.Bottom
         ) {
-
             exercises.forEach { exercise ->
-
                 val durationRatio = exercise.duration.toFloat() / maxDuration
                 val calorieRatio = exercise.calorie.toFloat() / maxCalorie
 
-                val animatedDurationRatio = remember { Animatable(0f) }
-                val animatedCalorieRatio = remember { Animatable(0f) }
+                val animatedDuration = remember { Animatable(0f) }
+                val animatedCalorie = remember { Animatable(0f) }
 
-                LaunchedEffect(Unit) {
-                    animatedDurationRatio.animateTo(
-                        durationRatio, animationSpec = tween(durationMillis = 1000)
+                LaunchedEffect(exercise.name) {
+                    animatedDuration.animateTo(
+                        targetValue = durationRatio,
+                        animationSpec = tween(durationMillis = 800)
                     )
-                    animatedCalorieRatio.animateTo(
-                        calorieRatio,
-                        animationSpec = tween(durationMillis = 1000)
+                    animatedCalorie.animateTo(
+                        targetValue = calorieRatio,
+                        animationSpec = tween(durationMillis = 800)
                     )
                 }
 
                 Column(
+                    modifier = Modifier
+                        .width(48.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(8.dp)
+                    verticalArrangement = Arrangement.Bottom
                 ) {
+                    // 막대 그래프만 아래에서 위로 커지도록
+                    Box(
+                        modifier = Modifier
+                            .height(animatedDuration.value * barMaxHeight)
+                            .width(16.dp)
+                            .background(Color.Blue, RoundedCornerShape(2.dp))
+                    )
+                    
 
                     Box(
                         modifier = Modifier
-                            .width(24.dp)
-                            .height(animatedDurationRatio.value * 200.dp)
-                            .background(
-                                Color.Blue,
-                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                            )
-
+                            .height(animatedCalorie.value * barMaxHeight)
+                            .width(16.dp)
+                            .background(Color.Red, RoundedCornerShape(2.dp))
                     )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .width(24.dp)
-                            .height(animatedCalorieRatio.value * 200.dp)
-                            .background(
-                                Color.Red,
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Text(
-                        text = exercise.name,
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-
                 }
-
-
-
             }
-
         }
 
-        Column {
+        Spacer(modifier = Modifier.height(12.dp))
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            exercises.forEach { exercise ->
+                Text(
+                    text = exercise.name,
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .width(48.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             AnimatedText(
                 text = "duration",
                 color = Color.Blue,
-                fontSize = 24.sp
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
             )
-
+            Spacer(modifier = Modifier.width(10.dp))
             AnimatedText(
                 text = "calorie",
                 color = Color.Red,
-                fontSize = 24.sp
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
             )
         }
-
     }
 }

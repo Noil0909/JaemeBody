@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,12 +52,18 @@ import com.example.jaemebody.MainViewModel
 import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.ui.components.AnimatedText
 import com.example.jaemebody.ui.dietRecord.dietRecordInfo.DietRecordInfoActivity
+import java.time.LocalDate
 
 @Composable
 fun DietRecordListScreen(
     mainViewModel: MainViewModel,
     onAddClicked: () -> Unit
 ) {
+    val allExercises by mainViewModel.exerciseRecords.collectAsState()
+    val today = LocalDate.now().toString()
+    val todayExercises = allExercises.filter { it.date == today }
+    val totalCalories = todayExercises.sumOf { it.calorie }
+    val totalDuration = todayExercises.sumOf { it.duration }
 
     val exerciseList by mainViewModel.exerciseRecords.collectAsState()
     val targetCalories by mainViewModel.targetCalorie.collectAsState()
@@ -82,9 +89,10 @@ fun DietRecordListScreen(
             Spacer(modifier = Modifier.padding(20.dp))
 
             AnimatedText(
-                text = "Diet Records",
+                text = "오늘의 운동 현황",
                 color = Color.White,
-                fontSize = 24.sp
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.padding(20.dp))
@@ -119,12 +127,22 @@ fun DietRecordListScreen(
                 AnimatedCircularProgressBar(
                     consumedCalories = consumedCalories,
                     targetCalories = targetCalories,
-                    modifier = Modifier.size(200.dp),
-                    strokeWidth = 20.dp
+                    modifier = Modifier.size(150.dp),
+                    strokeWidth = 12.dp
                 )
             }
 
             Spacer(modifier = Modifier.padding(20.dp))
+
+            Text(
+                text = "🔥 $totalCalories kcal 소모 / $totalDuration 분 운동",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             LazyColumn {
                 items(exerciseList){ exercise ->
@@ -203,7 +221,7 @@ fun ExerciseRow(exercise: Exercise){
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-            .background(Color(0xFF500371), shape = RoundedCornerShape(10.dp))
+            .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .clickable{
                 val intent = Intent(context, DietRecordInfoActivity::class.java)
@@ -222,20 +240,20 @@ fun ExerciseRow(exercise: Exercise){
 
             Text(
                 text = exercise.name,
-                color = Color(0xFF00BFAE),
+                color = Color.Cyan,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
                 text = "${exercise.duration} 분",
-                color = Color(0xFF007DBF)
+                color = Color.Gray
             )
 
         }
         Text(
             text = "${exercise.calorie} kcal",
-            color = Color(0xFF007A8C)
+            color = Color.White
         )
     }
 }
@@ -276,7 +294,7 @@ fun CircularProgressBar(
     progress: Float,
     modifier: Modifier,
     strokeWidth: Dp,
-    color: Color = Color.Blue,
+    color: Color = Color.Green,
     backgroundColor: Color = Color.LightGray
 ){
     Canvas(modifier = modifier){

@@ -67,7 +67,8 @@ fun DietRecordInputScreen(
             AnimatedText(
                 text = "Diet Record Input",
                 color = Color.White,
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Medium
             )
 
             Spacer(modifier = Modifier.padding(20.dp))

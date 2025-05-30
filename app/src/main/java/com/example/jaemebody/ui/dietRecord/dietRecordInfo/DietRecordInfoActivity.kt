@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jaemebody.ui.components.AnimatedText
@@ -70,7 +71,8 @@ fun DietRecordInfoScreen(
         AnimatedText(
             text = "Info",
             color = Color.Blue,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Medium
         )
 
         Spacer(modifier = Modifier.padding(20.dp))

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimatedText(text: String, color: Color, fontSize: TextUnit){
+fun AnimatedText(text: String, color: Color, fontSize: TextUnit, fontWeight: FontWeight){
 
     val animatedAlpha = remember { Animatable(0f) }
 
@@ -46,6 +46,7 @@ fun AnimatedText(text: String, color: Color, fontSize: TextUnit){
         text = text,
         color = color,
         fontSize = fontSize,
+        fontWeight = fontWeight,
         modifier = Modifier.alpha(animatedAlpha.value)
     )
 }
