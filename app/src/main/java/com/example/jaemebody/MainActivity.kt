@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.example.jaemebody.ui.common.JaemeBodyScreen
 import com.example.jaemebody.ui.main.MainNavigation
 import com.example.jaemebody.ui.main.screens.CalendarScreen
@@ -24,6 +25,7 @@ import com.example.jaemebody.ui.main.screens.HomeScreen
 import com.example.jaemebody.ui.main.screens.ProfileScreen
 import com.example.jaemebody.ui.theme.JaemeBodyTheme
 
+@ExperimentalWearMaterialApi
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel = MainViewModel()

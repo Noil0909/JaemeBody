@@ -1,7 +1,10 @@
 package com.example.jaemebody
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
 import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -98,5 +101,12 @@ class MainViewModel: ViewModel() {
 
     fun setTargetCalorie(value: Int) {
         _targetCalorie.value = value
+    }
+
+    private val _profileImageUri = MutableStateFlow<Uri?>(null)
+    val profileImageUri: StateFlow<Uri?> = _profileImageUri
+
+    fun setProfileImageUri(uri: Uri?) {
+        _profileImageUri.value = uri
     }
 }

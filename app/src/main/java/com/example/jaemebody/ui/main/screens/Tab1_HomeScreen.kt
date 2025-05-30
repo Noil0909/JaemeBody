@@ -42,8 +42,8 @@ import com.example.jaemebody.ui.components.AnimatedText
 import com.example.jaemebody.ui.components.ShiningText
 import java.time.LocalDate
 
-@Composable
 @ExperimentalLayoutApi
+@Composable
 fun HomeScreen(mainViewModel: MainViewModel) {
     val exercises by mainViewModel.exerciseRecords.collectAsState()
     val today = LocalDate.now().toString()
@@ -88,7 +88,7 @@ fun HomeScreen(mainViewModel: MainViewModel) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@ExperimentalLayoutApi
 @Composable
 fun BadgeListSection(exercises: List<Exercise>) {
     // 중복된 운동 제거 (이름 기준)
@@ -96,7 +96,7 @@ fun BadgeListSection(exercises: List<Exercise>) {
 
     Box(
         modifier = Modifier
-            .height(90.dp) // ✅ 최대 두 줄 정도 높이 제한
+            .height(80.dp) // ✅ 최대 두 줄 정도 높이 제한
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()) // ✅ 내부 스크롤 가능하도록
     ) {
@@ -175,15 +175,16 @@ fun AnimatedExerciseGraph(exercises: List<Exercise>) {
                         modifier = Modifier
                             .height(animatedDuration.value * barMaxHeight)
                             .width(16.dp)
-                            .background(Color.Blue, RoundedCornerShape(2.dp))
+                            .background(Color.Blue, RoundedCornerShape(4.dp))
                     )
-                    
+
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Box(
                         modifier = Modifier
                             .height(animatedCalorie.value * barMaxHeight)
                             .width(16.dp)
-                            .background(Color.Red, RoundedCornerShape(2.dp))
+                            .background(Color.Red, RoundedCornerShape(4.dp))
                     )
                 }
             }
@@ -191,6 +192,7 @@ fun AnimatedExerciseGraph(exercises: List<Exercise>) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // 운동 이름 고정 표시
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -217,14 +219,14 @@ fun AnimatedExerciseGraph(exercises: List<Exercise>) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AnimatedText(
-                text = "duration",
+                text = "시간",
                 color = Color.Blue,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.width(10.dp))
             AnimatedText(
-                text = "calorie",
+                text = "칼로리",
                 color = Color.Red,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium

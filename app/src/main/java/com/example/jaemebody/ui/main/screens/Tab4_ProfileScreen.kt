@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.example.jaemebody.MainViewModel
 import com.example.jaemebody.ui.common.ProfileScreens
 import com.example.jaemebody.ui.profile.ProfileEditScreen
@@ -15,6 +16,7 @@ import com.example.jaemebody.ui.profile.ProfileInfoScreen
 
 
 @Composable
+@ExperimentalWearMaterialApi
 fun ProfileScreen(mainViewModel: MainViewModel) {
     // profile screen 탭 로드 되고 MainViewModel의 loadProfile() 실행하는 방법도 있다
     // 이러한 경우 이 코드에서 mainViewModel.loadProfile() 23번줄에 호출해 로드 실행

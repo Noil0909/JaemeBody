@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.example.jaemebody.MainActivity
 import com.example.jaemebody.repository.FirebaseRepository
 import com.example.jaemebody.ui.intro.screens.LoginScreen
@@ -24,6 +25,7 @@ import com.example.jaemebody.ui.intro.screens.SignUpStep1Screen
 import com.example.jaemebody.ui.intro.screens.SignUpStep2Screen
 import com.example.jaemebody.ui.theme.JaemeBodyTheme
 
+@ExperimentalWearMaterialApi
 class IntroActivity : ComponentActivity() {
 
     private val introViewModel: IntroViewModel by viewModels()

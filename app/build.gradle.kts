@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -87,4 +89,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore") // firestore
 
     implementation("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.31.4-beta")
 }

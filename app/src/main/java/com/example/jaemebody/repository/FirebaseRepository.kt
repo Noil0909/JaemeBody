@@ -1,10 +1,12 @@
 package com.example.jaemebody.repository
 
+import android.net.Uri
 import android.util.Log
 import com.example.jaemebody.model.Exercise
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.tasks.await
 
@@ -124,4 +126,5 @@ object FirebaseRepository {
 
         }
     }
+
 }
