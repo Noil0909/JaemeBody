@@ -8,7 +8,7 @@ enum class JaemeBodyScreen(val icon: Int){
     Home(R.drawable.tab1_icon),  // 홈 화면
     Diet(R.drawable.tab2_icon),  // 다이어트 화면
     Calendar(R.drawable.tab3_icon), // 달력 화면
-    Profile(R.drawable.tab3_icon) // 프로필 화면
+    Profile(R.drawable.tab4_icon) // 프로필 화면
 }
 
 // 프로필 화면 스크린들

@@ -71,6 +71,6 @@ class MainActivity : ComponentActivity() {
     // 현재 탭이 어딘지에 따라, 즉 Diet 탭에서만 onRestart 되도록 수정하면 더 좋을듯
     override fun onRestart(){
         super.onRestart()
-        mainViewModel.loadExercises()
+//        mainViewModel.loadExercises()
     }
 }

@@ -62,7 +62,7 @@ fun DietRecordListScreen(
     val targetCalories by mainViewModel.targetCalorie.collectAsState()
 
     LaunchedEffect(Unit){
-        mainViewModel.loadExercises()
+        mainViewModel.loadTodayExercises()
     }
 
     val consumedCalories = exerciseList.sumOf { it.calorie }

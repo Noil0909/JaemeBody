@@ -39,6 +39,11 @@ fun HomeScreen(mainViewModel: MainViewModel) {
     val today = LocalDate.now().toString()
     val todayExercises = allExercises.filter { it.date == today }
 
+    LaunchedEffect(Unit) {
+        mainViewModel.loadTodayExercises()
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
