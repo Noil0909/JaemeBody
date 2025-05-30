@@ -77,12 +77,25 @@ fun HomeScreen(mainViewModel: MainViewModel) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("오늘 한 운동", color = Color.White, fontSize = 20.sp)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        BadgeListSection(todayExercises)
-        if (todayExercises.isNotEmpty()) {
+        if (todayExercises.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "오늘의 운동 기록이 없습니다.\n\n운동을 추가해보세요!",
+                    color = Color.Gray,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        else {
+            Text("오늘 한 운동", color = Color.White, fontSize = 20.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            BadgeListSection(todayExercises)
             AnimatedExerciseGraph(todayExercises)
         }
     }
