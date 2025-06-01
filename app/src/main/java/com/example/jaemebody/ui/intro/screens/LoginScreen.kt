@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import com.example.jaemebody.ui.components.CustomTextField
 fun LoginScreen(
     onLogin: (String, String) -> Unit,
     onSignUp: () -> Unit,
+    onRecover: () -> Unit,
     errorMessage: String?
 ){
 
@@ -87,7 +89,6 @@ fun LoginScreen(
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
-
         CustomButton(
             text = "로그인",
             onClick = {
@@ -101,7 +102,6 @@ fun LoginScreen(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-
 
         Button(
             onClick = { // 카카오 로그인 구현 ㄱㄱ
@@ -139,6 +139,15 @@ fun LoginScreen(
             },
             backgroundColor = Color.DarkGray
         )
+        TextButton(onClick = {
+            onRecover() // 아이디/비밀번호 찾기 화면 이동
+        }) {
+            Text(
+                text = "아이디 / 비밀번호 찾기",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
 
     }
 }

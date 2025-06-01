@@ -49,8 +49,9 @@ object FirebaseRepository {
     }
 
     // 유저 정보 저장
-    fun saveProfileData(name: String, age: String, height: String, onComplete: (Boolean) -> Unit){
+    fun saveProfileData(email: String, name: String, age: String, height: String, onComplete: (Boolean) -> Unit){
         val profile = hashMapOf(
+            "email" to email,
             "name" to name,
             "age" to age,
             "height" to height
@@ -85,6 +86,32 @@ object FirebaseRepository {
                     onComplete("", "", "")
                 }
         } ?: onComplete("", "", "")
+    }
+
+    fun findEmailByNameAndAge(name: String, age: String, onResult: (String?) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("profiles")
+            .whereEqualTo("name", name)
+            .whereEqualTo("age", age)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val email = querySnapshot.documents.first().getString("email")
+                    onResult(email)
+                } else {
+                    onResult(null)
+                }
+            }
+            .addOnFailureListener {
+                onResult(null)
+            }
+    }
+
+    fun sendPasswordResetEmail(email: String, onComplete: (Boolean) -> Unit) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                onComplete(task.isSuccessful)
+            }
     }
 
     // 운동 기록 만들기

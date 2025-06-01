@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.repository.FirebaseRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -50,19 +51,34 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun saveProfile(name: String, age: String, height: String){
-        FirebaseRepository.saveProfileData(name, age, height) { success ->
+    fun saveProfile(name: String, age: String, height: String) {
+        val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
+
+        FirebaseRepository.saveProfileData(email, name, age, height) { success ->
             if (success) {
                 _name.value = name
                 _age.value = age
                 _height.value = height
             } else {
-                // 실패 예외처리
                 _errorMessage.value = "저장 실패"
             }
-
         }
     }
+
+//    fun saveProfile(name: String, age: String, height: String){
+//        FirebaseRepository.saveProfileData(name, age, height) { success ->
+//            if (success) {
+//                _name.value = name
+//                _age.value = age
+//                _height.value = height
+//            } else {
+//                // 실패 예외처리
+//                _errorMessage.value = "저장 실패"
+//            }
+//
+//        }
+//    }
+
 
     fun clearErrorMessage(){
         _errorMessage.value = null

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,11 +22,13 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.example.jaemebody.MainActivity
 import com.example.jaemebody.repository.FirebaseRepository
 import com.example.jaemebody.ui.intro.screens.LoginScreen
+import com.example.jaemebody.ui.intro.screens.RecoverAccountScreen
 import com.example.jaemebody.ui.intro.screens.SignUpStep1Screen
 import com.example.jaemebody.ui.intro.screens.SignUpStep2Screen
 import com.example.jaemebody.ui.theme.JaemeBodyTheme
 
 @ExperimentalWearMaterialApi
+@ExperimentalLayoutApi
 class IntroActivity : ComponentActivity() {
 
     private val introViewModel: IntroViewModel by viewModels()
@@ -66,10 +69,19 @@ class IntroActivity : ComponentActivity() {
                                 onSignUp = {
                                     screenState = "signup1"
                                 },
+                                onRecover = {
+                                    screenState = "recover" //
+                                },
                                 errorMessage = error
                             )
                         }
-
+                        "recover" -> {
+                            RecoverAccountScreen(
+                                onBack = {
+                                    screenState = "login"
+                                }
+                            )
+                        }
                         "signup1" -> {
                             SignUpStep1Screen(
                                 onNext = { email, password ->
