@@ -1,6 +1,7 @@
 package com.example.jaemebody.ui.main.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,14 +18,18 @@ import com.example.jaemebody.ui.profile.ProfileInfoScreen
 
 @Composable
 @ExperimentalWearMaterialApi
+@ExperimentalLayoutApi
 fun ProfileScreen(mainViewModel: MainViewModel) {
     // profile screen 탭 로드 되고 MainViewModel의 loadProfile() 실행하는 방법도 있다
     // 이러한 경우 이 코드에서 mainViewModel.loadProfile() 23번줄에 호출해 로드 실행
     var currentScreen by rememberSaveable { mutableStateOf(ProfileScreens.ProfileInfo)}
 
+    val context = LocalContext.current
+
     val name by mainViewModel.name.collectAsState()
     val age by mainViewModel.age.collectAsState()
     val height by mainViewModel.height.collectAsState()
+    val imageUri by mainViewModel.profileImageUri.collectAsState()
 
     val errorMessage by mainViewModel.errorMessage.collectAsState()
 
@@ -54,7 +59,12 @@ fun ProfileScreen(mainViewModel: MainViewModel) {
 //                    age = newAge
 //                    height = newHeight
                     // 저장하기
-                    mainViewModel.saveProfile(newName, newAge, newHeight)
+                    // imageUri가 있다면 포함해서 저장
+                    if (imageUri != null) {
+                        mainViewModel.saveProfile(context, imageUri!!, newName, newAge, newHeight)
+                    } else {
+                        Toast.makeText(context, "프로필 이미지를 선택해주세요", Toast.LENGTH_SHORT).show()
+                    }
                     currentScreen = ProfileScreens.ProfileInfo
                 },
                 onCancelClicked = {

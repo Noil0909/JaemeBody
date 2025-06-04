@@ -2,6 +2,7 @@ package com.example.jaemebody
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
@@ -25,6 +26,9 @@ class MainViewModel: ViewModel() {
     private val _height = MutableStateFlow("0")
     val height : StateFlow<String> = _height
 
+    private val _profileImageUrl = MutableStateFlow<String?>(null)
+    val profileImageUrl: StateFlow<String?> = _profileImageUrl
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage : StateFlow<String?> = _errorMessage
 
@@ -39,7 +43,7 @@ class MainViewModel: ViewModel() {
     }
 
     fun loadProfile(){
-        FirebaseRepository.loadProfileData() {name, age, height ->
+        FirebaseRepository.loadProfileData() {name, age, height, imageUrl ->
 
             val defaultName = "Unknown Name"
             val defaultAge = "Unknown Age"
@@ -48,19 +52,23 @@ class MainViewModel: ViewModel() {
             _name.value = name.ifEmpty { defaultName }
             _age.value = age.ifEmpty { defaultAge }
             _height.value = height.ifEmpty { defaultHeight }
+            _profileImageUrl.value = if (!imageUrl.isNullOrEmpty()) imageUrl else null
         }
     }
 
-    fun saveProfile(name: String, age: String, height: String) {
-        val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
-
-        FirebaseRepository.saveProfileData(email, name, age, height) { success ->
-            if (success) {
-                _name.value = name
-                _age.value = age
-                _height.value = height
-            } else {
-                _errorMessage.value = "저장 실패"
+    fun saveProfile(context: Context, imageUri: Uri, name: String, age: String, height: String) {
+        FirebaseRepository.uploadProfileImage(context, imageUri) { imageUrl ->
+            val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
+            FirebaseRepository.saveProfileData(email, name, age, height, imageUrl) { success ->
+                if (success) {
+                    _name.value = name
+                    _age.value = age
+                    _height.value = height
+                    _profileImageUrl.value = imageUrl
+                    Log.d("PROFILE_SAVE", "uploadProfileImage result: $imageUrl")
+                } else {
+                    _errorMessage.value = "프로필 저장 실패"
+                }
             }
         }
     }
@@ -125,5 +133,24 @@ class MainViewModel: ViewModel() {
 
     fun setProfileImageUri(uri: Uri?) {
         _profileImageUri.value = uri
+    }
+
+    fun saveProfileImage(context: Context, imageUri: Uri, onComplete: (Boolean) -> Unit) {
+        FirebaseRepository.uploadProfileImage(context, imageUri) { imageUrl ->
+            if (imageUrl == null) {
+                onComplete(false)
+                return@uploadProfileImage
+            }
+
+            val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
+            FirebaseRepository.saveProfileData(email, _name.value, _age.value, _height.value, imageUrl) { success ->
+                if (success) {
+                    _profileImageUrl.value = imageUrl
+                    onComplete(true)
+                } else {
+                    onComplete(false)
+                }
+            }
+        }
     }
 }

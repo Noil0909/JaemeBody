@@ -2,6 +2,7 @@ package com.example.jaemebody.ui.profile
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -11,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -68,6 +70,7 @@ import com.example.jaemebody.ui.intro.IntroActivity
 
 @Composable
 @ExperimentalWearMaterialApi
+@ExperimentalLayoutApi
 fun ProfileInfoScreen(
     mainViewModel: MainViewModel,
     name: String,
@@ -80,9 +83,19 @@ fun ProfileInfoScreen(
     val showLogoutDialog = remember { mutableStateOf(false) }
 
     val profileImageUri by mainViewModel.profileImageUri.collectAsState()
+    val profileImageUrl by mainViewModel.profileImageUrl.collectAsState()
 
     val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { mainViewModel.setProfileImageUri(it) }
+        uri?.let {
+            mainViewModel.setProfileImageUri(it)
+
+            // 🔧 이미지 선택 즉시 업로드 → 저장
+            mainViewModel.saveProfileImage(context, it) { success ->
+                if (!success) {
+                    Toast.makeText(context, "프로필 이미지 저장 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     Box(
@@ -107,6 +120,7 @@ fun ProfileInfoScreen(
             // 프로필 이미지 변경
             ProfileImageSection(
                 profileImageUri = profileImageUri,
+                profileImageUrl = profileImageUrl,
                 onPickImage = { imageLauncher.launch("image/*") },
                 onResetImage = { mainViewModel.setProfileImageUri(null) }
             )
@@ -145,7 +159,7 @@ fun ProfileInfoScreen(
     }
 
 
-    // ✅ 로그아웃 다이얼로그 (기존 그대로 유지)
+    // 로그아웃 다이얼로그
     if (showLogoutDialog.value) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog.value = false },
@@ -248,6 +262,7 @@ fun ProfileInfo(label : String, value : String){
 @Composable
 fun ProfileImageSection(
     profileImageUri: Uri?,
+    profileImageUrl: String?,
     onPickImage: () -> Unit,
     onResetImage: () -> Unit
 ) {
@@ -259,10 +274,11 @@ fun ProfileImageSection(
     ) {
         // 프로필 이미지
         Image(
-            painter = if (profileImageUri != null)
-                rememberAsyncImagePainter(profileImageUri)
-            else
-                painterResource(id = R.drawable.user_img),
+            painter = when {
+                profileImageUri != null -> rememberAsyncImagePainter(profileImageUri)
+                profileImageUrl != null -> rememberAsyncImagePainter(profileImageUrl)
+                else -> painterResource(id = R.drawable.user_img)
+            },
             contentDescription = "Profile Image",
             modifier = Modifier
                 .fillMaxSize()

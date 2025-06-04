@@ -1,5 +1,6 @@
 package com.example.jaemebody.repository
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.jaemebody.model.Exercise
@@ -9,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 object FirebaseRepository {
 
@@ -49,13 +51,24 @@ object FirebaseRepository {
     }
 
     // 유저 정보 저장
-    fun saveProfileData(email: String, name: String, age: String, height: String, onComplete: (Boolean) -> Unit){
+    fun saveProfileData(
+        email: String,
+        name: String,
+        age: String,
+        height: String,
+        imageUrl: String? = null,
+        onComplete: (Boolean) -> Unit
+    ){
         val profile = hashMapOf(
             "email" to email,
             "name" to name,
             "age" to age,
             "height" to height
         )
+
+        imageUrl?.let {
+            profile["imageUrl"] = it
+        }
 
         currentUser?.let{ user ->
             db.collection("profiles")
@@ -67,7 +80,7 @@ object FirebaseRepository {
     }
 
     // 유저 정보 불러오기
-    fun loadProfileData(onComplete: (String, String, String) -> Unit) {
+    fun loadProfileData(onComplete: (String, String, String, String?) -> Unit) {
         currentUser?.let{ user ->
             db.collection("profiles")
                 .document(user.uid)
@@ -77,15 +90,16 @@ object FirebaseRepository {
                         val name = document.getString("name") ?: ""
                         val age = document.getString("age") ?: ""
                         val height = document.getString("height") ?: ""
-                        onComplete(name, age, height)
+                        val imageUrl = document.getString("imageUrl")
+                        onComplete(name, age, height, imageUrl)
                     } else{
-                        onComplete("", "", "")
+                        onComplete("", "", "", null)
                     }
                 }
                 .addOnFailureListener {
-                    onComplete("", "", "")
+                    onComplete("", "", "", null)
                 }
-        } ?: onComplete("", "", "")
+        } ?: onComplete("", "", "", null)
     }
 
     fun findEmailByNameAndAge(name: String, age: String, onResult: (String?) -> Unit) {
@@ -154,4 +168,43 @@ object FirebaseRepository {
         }
     }
 
+    // 프로필 이미지 업로드
+    // 요금제 변경으로 Firebase에 프로필 업로드 안됨
+    fun uploadProfileImage(context: Context, uri: Uri?, onResult: (String?) -> Unit) {
+        if (uri == null) {
+            Log.e("UPLOAD", "Uri is null")
+            onResult(null)
+            return
+        }
+
+        val filename = UUID.randomUUID().toString() + ".jpg"
+        val storageRef = FirebaseStorage.getInstance().reference.child("profileImages/$filename")
+
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                Log.e("UPLOAD", "InputStream is null. Cannot access image.")
+                onResult(null)
+                return
+            }
+
+            storageRef.putStream(inputStream)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        Log.d("UPLOAD", "Upload Success: $downloadUri")
+                        onResult(downloadUri.toString())
+                    }.addOnFailureListener { e ->
+                        Log.e("UPLOAD", "Download URL Failed: ${e.message}")
+                        onResult(null)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("UPLOAD", "Upload Failed: ${e.message}")
+                    onResult(null)
+                }
+        } catch (e: Exception) {
+            Log.e("UPLOAD", "Exception: ${e.message}")
+            onResult(null)
+        }
+    }
 }

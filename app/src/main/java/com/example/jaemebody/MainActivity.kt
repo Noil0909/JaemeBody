@@ -1,5 +1,7 @@
 package com.example.jaemebody
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.example.jaemebody.ui.common.JaemeBodyScreen
 import com.example.jaemebody.ui.main.MainNavigation
@@ -31,10 +35,35 @@ import com.example.jaemebody.ui.theme.JaemeBodyTheme
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel = MainViewModel()
-
+    companion object {
+        private const val callPermission = android.Manifest.permission.CALL_PHONE
+        private const val mediaPermission = android.Manifest.permission.READ_EXTERNAL_STORAGE
+        private const val imagePermission = android.Manifest.permission.READ_MEDIA_IMAGES
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {  // API 33 이상
+            if (ContextCompat.checkSelfPermission(this, imagePermission)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(imagePermission),
+                    100
+                )
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, mediaPermission)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(mediaPermission),
+                    100
+                )
+            }
+        }
         mainViewModel.loadExercises()
 
         setContent {
