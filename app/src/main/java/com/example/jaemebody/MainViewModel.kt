@@ -58,7 +58,7 @@ class MainViewModel: ViewModel() {
             _name.value = name.ifEmpty { defaultName }
             _age.value = age.ifEmpty { defaultAge }
             _height.value = height.ifEmpty { defaultHeight }
-            _weight.value = height.ifEmpty { defaultWeight }
+            _weight.value = weight.ifEmpty { defaultWeight }
             _profileImageUrl.value = if (!imageUrl.isNullOrEmpty()) imageUrl else null
         }
     }
