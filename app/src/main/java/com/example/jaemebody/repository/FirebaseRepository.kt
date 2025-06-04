@@ -4,8 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.jaemebody.model.Exercise
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.user.UserApiClient
@@ -56,6 +58,7 @@ object FirebaseRepository {
         name: String,
         age: String,
         height: String,
+        weight: String,
         imageUrl: String? = null,
         onComplete: (Boolean) -> Unit
     ){
@@ -63,7 +66,8 @@ object FirebaseRepository {
             "email" to email,
             "name" to name,
             "age" to age,
-            "height" to height
+            "height" to height,
+            "weight" to weight
         )
 
         imageUrl?.let {
@@ -80,7 +84,7 @@ object FirebaseRepository {
     }
 
     // 유저 정보 불러오기
-    fun loadProfileData(onComplete: (String, String, String, String?) -> Unit) {
+    fun loadProfileData(onComplete: (String, String, String, String, String?) -> Unit) {
         currentUser?.let{ user ->
             db.collection("profiles")
                 .document(user.uid)
@@ -90,16 +94,40 @@ object FirebaseRepository {
                         val name = document.getString("name") ?: ""
                         val age = document.getString("age") ?: ""
                         val height = document.getString("height") ?: ""
+                        val weight = document.getString("weight") ?: ""
                         val imageUrl = document.getString("imageUrl")
-                        onComplete(name, age, height, imageUrl)
+                        onComplete(name, age, height, weight, imageUrl)
                     } else{
-                        onComplete("", "", "", null)
+                        onComplete("", "", "", "", null)
                     }
                 }
                 .addOnFailureListener {
-                    onComplete("", "", "", null)
+                    onComplete("", "", "", "", null)
                 }
-        } ?: onComplete("", "", "", null)
+        } ?: onComplete("", "", "", "", null)
+    }
+
+    // 프로필 이미지 업로드
+    // 요금제 변경으로 Firebase에 프로필 업로드 안됨
+    fun uploadProfileImage(uri: Uri, onResult: (String?) -> Unit) {
+        val userId = Firebase.auth.currentUser?.uid ?: return onResult(null)
+        val storageRef = FirebaseStorage.getInstance().reference
+            .child("profile_images/$userId.jpg")
+
+        storageRef.putFile(uri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
+                }
+                storageRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result.toString()
+                    onResult(downloadUri)
+                } else {
+                    onResult(null)
+                }
+            }
     }
 
     fun findEmailByNameAndAge(name: String, age: String, onResult: (String?) -> Unit) {
@@ -168,43 +196,4 @@ object FirebaseRepository {
         }
     }
 
-    // 프로필 이미지 업로드
-    // 요금제 변경으로 Firebase에 프로필 업로드 안됨
-    fun uploadProfileImage(context: Context, uri: Uri?, onResult: (String?) -> Unit) {
-        if (uri == null) {
-            Log.e("UPLOAD", "Uri is null")
-            onResult(null)
-            return
-        }
-
-        val filename = UUID.randomUUID().toString() + ".jpg"
-        val storageRef = FirebaseStorage.getInstance().reference.child("profileImages/$filename")
-
-        try {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            if (inputStream == null) {
-                Log.e("UPLOAD", "InputStream is null. Cannot access image.")
-                onResult(null)
-                return
-            }
-
-            storageRef.putStream(inputStream)
-                .addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                        Log.d("UPLOAD", "Upload Success: $downloadUri")
-                        onResult(downloadUri.toString())
-                    }.addOnFailureListener { e ->
-                        Log.e("UPLOAD", "Download URL Failed: ${e.message}")
-                        onResult(null)
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("UPLOAD", "Upload Failed: ${e.message}")
-                    onResult(null)
-                }
-        } catch (e: Exception) {
-            Log.e("UPLOAD", "Exception: ${e.message}")
-            onResult(null)
-        }
-    }
 }

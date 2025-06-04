@@ -76,6 +76,7 @@ fun ProfileInfoScreen(
     name: String,
     age: String,
     height: String,
+    weight: String,
     onEditClicked: () -> Unit
 ) {
     val context = LocalContext.current
@@ -88,13 +89,6 @@ fun ProfileInfoScreen(
     val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             mainViewModel.setProfileImageUri(it)
-
-            // 🔧 이미지 선택 즉시 업로드 → 저장
-            mainViewModel.saveProfileImage(context, it) { success ->
-                if (!success) {
-                    Toast.makeText(context, "프로필 이미지 저장 실패", Toast.LENGTH_SHORT).show()
-                }
-            }
         }
     }
 
@@ -129,6 +123,7 @@ fun ProfileInfoScreen(
             ProfileInfo(label = "이름", value = name)
             ProfileInfo(label = "나이", value = "$age 살")
             ProfileInfo(label = "키", value = "$height cm")
+            ProfileInfo(label = "몸무게", value = "$weight kg")
         }
 
         // 하단 버튼 영역
@@ -241,18 +236,18 @@ fun ProfileInfo(label : String, value : String){
                 color = Color.DarkGray.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(16.dp)
+            .padding(12.dp)
     ){
         Text(
             text = label,
-            fontSize = 18.sp,
+            fontSize = 15.sp,
             color = Color.White,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 3.dp)
         )
 
         Text(
             text = value,
-            fontSize = 22.sp,
+            fontSize = 19.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold
         )

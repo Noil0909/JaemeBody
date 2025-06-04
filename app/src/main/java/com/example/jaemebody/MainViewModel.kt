@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import com.example.jaemebody.model.Exercise
 import com.example.jaemebody.repository.FirebaseRepository
+import com.example.jaemebody.repository.FirebaseRepository.saveProfileData
+import com.example.jaemebody.repository.FirebaseRepository.uploadProfileImage
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +28,9 @@ class MainViewModel: ViewModel() {
     private val _height = MutableStateFlow("0")
     val height : StateFlow<String> = _height
 
+    private val _weight = MutableStateFlow("")
+    val weight : StateFlow<String> = _weight
+
     private val _profileImageUrl = MutableStateFlow<String?>(null)
     val profileImageUrl: StateFlow<String?> = _profileImageUrl
 
@@ -43,36 +48,40 @@ class MainViewModel: ViewModel() {
     }
 
     fun loadProfile(){
-        FirebaseRepository.loadProfileData() {name, age, height, imageUrl ->
+        FirebaseRepository.loadProfileData() {name, age, height, weight, imageUrl ->
 
             val defaultName = "Unknown Name"
             val defaultAge = "Unknown Age"
             val defaultHeight = "Unknown Height"
+            val defaultWeight = "Unknown Weight"
 
             _name.value = name.ifEmpty { defaultName }
             _age.value = age.ifEmpty { defaultAge }
             _height.value = height.ifEmpty { defaultHeight }
+            _weight.value = height.ifEmpty { defaultWeight }
             _profileImageUrl.value = if (!imageUrl.isNullOrEmpty()) imageUrl else null
         }
     }
 
-    fun saveProfile(context: Context, imageUri: Uri, name: String, age: String, height: String) {
-        FirebaseRepository.uploadProfileImage(context, imageUri) { imageUrl ->
-            val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
-            FirebaseRepository.saveProfileData(email, name, age, height, imageUrl) { success ->
-                if (success) {
-                    _name.value = name
-                    _age.value = age
-                    _height.value = height
-                    _profileImageUrl.value = imageUrl
-                    Log.d("PROFILE_SAVE", "uploadProfileImage result: $imageUrl")
-                } else {
-                    _errorMessage.value = "프로필 저장 실패"
-                }
+    fun saveProfile(
+        name: String,
+        age: String,
+        height: String,
+        weight: String,
+    ) {
+        val currentImageUri = profileImageUri.value
+
+        if (currentImageUri != null) {
+            // 이미지가 선택되었으면 업로드 후 저장
+            FirebaseRepository.uploadProfileImage(currentImageUri) { imageUrl ->
+                val urlToSave = imageUrl ?: _profileImageUrl.value
+                saveProfileImage(name, age, height, weight, urlToSave)
             }
+        } else {
+            // 이미지 선택 안되어 있으면 기존 URL 유지
+            saveProfileImage(name, age, height, weight, _profileImageUrl.value)
         }
     }
-
 //    fun saveProfile(name: String, age: String, height: String){
 //        FirebaseRepository.saveProfileData(name, age, height) { success ->
 //            if (success) {
@@ -86,6 +95,29 @@ class MainViewModel: ViewModel() {
 //
 //        }
 //    }
+
+    // 내부용 프로필 저장 로직
+    private fun saveProfileImage(
+        name: String,
+        age: String,
+        height: String,
+        weight: String,
+        imageUrl: String?
+    ) {
+        val email = FirebaseAuth.getInstance().currentUser?.email ?: return
+
+        FirebaseRepository.saveProfileData(email, name, age, height, weight, imageUrl) { success ->
+            if (success) {
+                _name.value = name
+                _age.value = age
+                _height.value = height
+                _weight.value = weight
+                _profileImageUrl.value = imageUrl
+            } else {
+                _errorMessage.value = "프로필 저장에 실패했습니다."
+            }
+        }
+    }
 
 
     fun clearErrorMessage(){
@@ -133,24 +165,5 @@ class MainViewModel: ViewModel() {
 
     fun setProfileImageUri(uri: Uri?) {
         _profileImageUri.value = uri
-    }
-
-    fun saveProfileImage(context: Context, imageUri: Uri, onComplete: (Boolean) -> Unit) {
-        FirebaseRepository.uploadProfileImage(context, imageUri) { imageUrl ->
-            if (imageUrl == null) {
-                onComplete(false)
-                return@uploadProfileImage
-            }
-
-            val email = FirebaseAuth.getInstance().currentUser?.email ?: ""
-            FirebaseRepository.saveProfileData(email, _name.value, _age.value, _height.value, imageUrl) { success ->
-                if (success) {
-                    _profileImageUrl.value = imageUrl
-                    onComplete(true)
-                } else {
-                    onComplete(false)
-                }
-            }
-        }
     }
 }

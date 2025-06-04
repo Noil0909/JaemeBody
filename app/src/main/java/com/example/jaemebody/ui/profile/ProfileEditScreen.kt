@@ -33,7 +33,8 @@ fun ProfileEditScreen(
     initialName: String,
     initialAge: String,
     initialHeight: String,
-    onSaveClicked: (String, String, String) -> Unit,
+    initialWeight: String,
+    onSaveClicked: (String, String, String, String) -> Unit,
     onCancelClicked: () -> Unit
 ) {
 
@@ -42,6 +43,7 @@ fun ProfileEditScreen(
     var name by remember {mutableStateOf(initialName)}
     var age by remember { mutableStateOf(initialAge) }
     var height by remember { mutableStateOf(initialHeight) }
+    var weight by remember { mutableStateOf(initialWeight)}
 
     Box(
         modifier = Modifier
@@ -66,19 +68,20 @@ fun ProfileEditScreen(
             ProfileEditField(label = "이름", value = name, onValueChange = {name = it})
             ProfileEditField(label = "나이", value = age, onValueChange = {age = it})
             ProfileEditField(label = "키", value = height, onValueChange = {height = it})
+            ProfileEditField(label = "몸무게", value = weight, onValueChange = {weight = it})
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             CustomGradientButton(text = "저장",
                 onClick = {
-                    if(name.isNotBlank() && age.all{it.isDigit()} && height.all {it.isDigit()}){
-                        onSaveClicked(name, age, height)
+                    if(name.isNotBlank() && age.all{it.isDigit()} && height.all {it.isDigit()} && weight.all {it.isDigit()}){
+                        onSaveClicked(name, age, height, weight)
                     }
                     else{
                         Toast.makeText(
                             // 예외처리에 디테일 추가해보기
                             context,
-                            "이름은 문자, 나이와 키는 숫자를 입력해주세요.",
+                            "이름은 문자, 나이와 키, 몸무게는 숫자를 입력해주세요.",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -118,7 +121,7 @@ fun ProfileEditField(label: String, value: String, onValueChange: (String) -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
-                .padding(16.dp),
+                .padding(10.dp),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.White,
                 unfocusedIndicatorColor = Color.White,

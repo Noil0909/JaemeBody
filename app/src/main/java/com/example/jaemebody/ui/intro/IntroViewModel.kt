@@ -59,13 +59,14 @@ class IntroViewModel : ViewModel() {
         name: String,
         age: String,
         height: String,
+        weight: String,
         onFail: () -> Unit
     ) {
         viewModelScope.launch {
             try {
                 val user = FirebaseRepository.signUp(email, password)
                 if (user != null) {
-                    FirebaseRepository.saveProfileData(email, name, age, height) { success ->
+                    FirebaseRepository.saveProfileData(email, name, age, height, weight) { success ->
                         if (!success) onFail()
                     }
                     _authState.value = user

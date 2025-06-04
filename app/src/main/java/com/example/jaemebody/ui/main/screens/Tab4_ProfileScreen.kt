@@ -29,6 +29,7 @@ fun ProfileScreen(mainViewModel: MainViewModel) {
     val name by mainViewModel.name.collectAsState()
     val age by mainViewModel.age.collectAsState()
     val height by mainViewModel.height.collectAsState()
+    val weight by mainViewModel.weight.collectAsState()
     val imageUri by mainViewModel.profileImageUri.collectAsState()
 
     val errorMessage by mainViewModel.errorMessage.collectAsState()
@@ -45,6 +46,7 @@ fun ProfileScreen(mainViewModel: MainViewModel) {
                 name = name,
                 age = age,
                 height = height,
+                weight = weight,
                 onEditClicked = {currentScreen = ProfileScreens.ProfileEdit
                 }
             )
@@ -54,17 +56,9 @@ fun ProfileScreen(mainViewModel: MainViewModel) {
                 initialName = name,
                 initialAge = age,
                 initialHeight = height,
-                onSaveClicked = {newName, newAge, newHeight ->
-//                    name = newName
-//                    age = newAge
-//                    height = newHeight
-                    // 저장하기
-                    // imageUri가 있다면 포함해서 저장
-                    if (imageUri != null) {
-                        mainViewModel.saveProfile(context, imageUri!!, newName, newAge, newHeight)
-                    } else {
-                        Toast.makeText(context, "프로필 이미지를 선택해주세요", Toast.LENGTH_SHORT).show()
-                    }
+                initialWeight = weight,
+                onSaveClicked = { newName, newAge, newHeight, newWeight ->
+                    mainViewModel.saveProfile(newName, newAge, newHeight, newWeight)
                     currentScreen = ProfileScreens.ProfileInfo
                 },
                 onCancelClicked = {

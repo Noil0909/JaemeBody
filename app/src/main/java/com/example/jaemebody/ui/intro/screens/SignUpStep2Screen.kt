@@ -28,7 +28,7 @@ import com.example.jaemebody.ui.components.CustomTextField
 fun SignUpStep2Screen(
     email: String,
     password: String,
-    onRegister: (String, String, String, String, String) -> Unit, // email, password, name, age, height
+    onRegister: (String, String, String, String, String, String) -> Unit, // email, password, name, age, height, weight
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -36,6 +36,7 @@ fun SignUpStep2Screen(
     var name by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf("")}
 
     Column(
         modifier = Modifier
@@ -55,14 +56,15 @@ fun SignUpStep2Screen(
         CustomTextField(value = name, onValueChange = { name = it }, placeholder = "이름")
         CustomTextField(value = age, onValueChange = { age = it }, placeholder = "나이")
         CustomTextField(value = height, onValueChange = { height = it }, placeholder = "키")
+        CustomTextField(value = weight, onValueChange = { weight = it}, placeholder = "몸무게")
 
         Spacer(modifier = Modifier.height(16.dp))
 
         CustomGradientButton(
             text = "회원가입 완료",
             onClick = {
-                if (name.isNotBlank() && age.all { it.isDigit() } && height.all { it.isDigit() }) {
-                    onRegister(email, password, name, age, height)
+                if (name.isNotBlank() && age.all { it.isDigit() } && height.all { it.isDigit() } && weight.all {it.isDigit()}) {
+                    onRegister(email, password, name, age, height, weight)
                 } else {
                     Toast.makeText(context, "정확히 입력해주세요", Toast.LENGTH_SHORT).show()
                 }

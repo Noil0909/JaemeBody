@@ -100,7 +100,7 @@ class IntroActivity : ComponentActivity() {
                             SignUpStep2Screen(
                                 email = tempEmail,
                                 password = tempPassword,
-                                onRegister = { email, password, name, age, height ->
+                                onRegister = { email, password, name, age, height, weight ->
                                     // 회원가입 후 프로필 저장
                                     introViewModel.registerWithProfile(
                                         email = email,
@@ -108,6 +108,7 @@ class IntroActivity : ComponentActivity() {
                                         name = name,
                                         age = age,
                                         height = height,
+                                        weight = weight,
                                         onFail = {
                                             Toast.makeText(context, "회원가입 또는 저장 실패", Toast.LENGTH_SHORT).show()
                                         }
